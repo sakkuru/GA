@@ -8,11 +8,11 @@
     "background": {
       "scripts": [
         "javascripts/libs/jquery-1.9.1.min.js",
-        "javascripts/libs/chromexpress/buffer.js",
-        "javascripts/libs/chromexpress/server.js",
-        "javascripts/server/proxy.js",
+//        "javascripts/libs/chromexpress/buffer.js",
+//        "javascripts/libs/chromexpress/server.js",
+//        "javascripts/server/proxy.js",
 
-        "javascripts/client_connector.js",
+//        "javascripts/client_connector.js",
         "javascripts/upnp/upnp.js",
         "javascripts/discovery.js",
         "javascripts/dlna/av_transport.js",
