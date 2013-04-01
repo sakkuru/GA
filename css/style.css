@@ -1,0 +1,19 @@
+.debug textarea {
+  width: 95%;
+  height: 80px;
+  resize: none;
+}
+
+.debug video {
+  border: 1px solid gray;
+  box-shadow: 1px 1px 1px gray;
+  margin-left: 150px;
+}
+
+#control .media-url {
+  width: 320px;
+}
+
+.results .control-group, .results .dmrs {
+  margin-left: 10px;
+}

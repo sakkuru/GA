@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Chrome DLNA Controller</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/javascripts/libs/jquery-1.9.1.min.js"></script>
+    <script src="/javascripts/libs/chromexpress/buffer.js"></script>
+    <script src="/javascripts/upnp/upnp.js"></script>
+    <script src="/javascripts/discovery.js"></script>
+    <script src="/javascripts/dlna/av_transport.js"></script>
+    <script src="/javascripts/dlna/rendering_control.js"></script>
+    <script src="/javascripts/dlna/content_directory.js"></script>
+    <script src="/javascripts/script.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1><img src="/images/logo.png" alt="Chrome DLNA Controller"></h1>
+
+
+      <section class="main">
+        <form id="control" class="form-horizontal">
+          <div class="well">
+          <div class="control-group">
+
+            <label class="control-label">media url</label>
+            <div class="controls">
+              <input type="url" class="media-url">
+              <button class="op play btn" disabled><i class="icon-play"></i> play</button>
+              <button class="op pause btn" disabled><i class="icon-pause"></i> pause</button>
+              <button class="op stop btn" disabled><i class="icon-stop"></i> stop</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">volume</label>
+            <div class="controls">
+              <input type="number" class="volume">
+            </div>
+          </div>
+          </div>
+        </form>
+        <section class="results">
+          <div class="control-group" id="discovery">
+            <div class="controls">
+              <button id="m-search" class="btn"><i class="icon-search"></i> dlna devices</button>
+            </div>
+          </div>
+          <section class="dmrs"></section>
+        </section>
+      </section>
+      <hr>
+
+      <section class="debug">
+        <strong>console</strong><br>
+        <textarea readonly></textarea><br>
+        <strong>test contents</strong><br>
+        <video src="" controls></video>
+      </section>
+    </div>
+  </body>
+</html>
