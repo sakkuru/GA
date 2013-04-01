@@ -1,23 +1,20 @@
 {
   "manifest_version": 2,
-  "name": "Chrome DLNA Controller",
-  "description": "DLNA Controller for Chrome Packaged Apps v2",
+  "name": "Kushiro no yabo",
+  "description": "Kushiro no yabo",
   "version": "0.1",
   "minimum_chrome_version": "24",
   "app": {
     "background": {
       "scripts": [
         "javascripts/libs/jquery-1.9.1.min.js",
-//        "javascripts/libs/chromexpress/buffer.js",
-//        "javascripts/libs/chromexpress/server.js",
-//        "javascripts/server/proxy.js",
-
-//        "javascripts/client_connector.js",
         "javascripts/upnp/upnp.js",
         "javascripts/discovery.js",
         "javascripts/dlna/av_transport.js",
         "javascripts/dlna/content_directory.js",
         "javascripts/dlna/rendering_control.js",
+
+        "javascripts/youtube_connector.js",
         "javascripts/main.js"
       ]
     }
