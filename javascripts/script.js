@@ -21,7 +21,6 @@ var getAddress = function(callback){
     });
   });
 }
-var discovery = new Discovery();
 
 var View = {};
 
@@ -116,69 +115,164 @@ View.DMRs = {
 }
 
 
-
+var avt;
 $(function(){
-  getAddress(function(addr){
-    $("#control .media-url").val("http://"+addr+":3000/videos/miku.mp4");
-    $(".debug video").attr("src", "http://"+addr+":3000/videos/miku.mp4");
-  });
 
-  $("#m-search").click(function(ev) {
-    logger("Start M-SEARCH ....");
-    View.DMRs.init("<img src='/images/ajax-loader.gif'> Start discovering...");
-    discovery.start(function(res){
-      console.dir(res);
-      logger("M-SEARCH finished .... found "+res.length+" DMRs");
-      View.DMRs.update(res);
-    }, "urn:schemas-upnp-org:service:AVTransport:1");
-  });
+var yc = new youtubeConnector();
+$("form.search").submit(function(e){
+  var q = $("form.search input[name=query]").val();
+  e.preventDefault();
+  yc.search(q, function(res){
+     console.log(res);
+     $(".playlists").empty();
+     res.forEach(function(v){
+       var videourl = null;
 
-  $("#control .set").click(function(){
-    var media_url = $("#control .media-url").val();
-    if(!!media_url === false) {
-      logger("Media url is now empty");
-      alert("Media url is now empty");
-      return;
-    }
-    View.DMRs.set(media_url, function(res) {
-      console.dir(res);
-      logger("Set AVTransportURL as "+media_url+" succeeded");
-    });
-  });
+       if(!!v.video && v.video instanceof Array) {
 
-  $("#control .play").click(function(){
-    var media_url = $("#control .media-url").val();
-    if(!!media_url === false) {
-      logger("Media url is now empty");
-      alert("Media url is now empty");
-      return;
-    }
-    View.DMRs.play(media_url, function(res){
-      console.dir(res);
-      logger("Play succeeded");
-    });
-  });
+         v.video.forEach(function(v_){
+           console.log(v_);
+           if(v_.quality === "medium" && v_.type.indexOf("video/mp4") === 0) {
+            videourl = v_.url;
+           }
+         });
+         console.log(videourl);
 
-  $("#control .stop").click(function(){
-    View.DMRs.stop(function(res){
-      console.dir(res);
-      logger("Stop succeeded");
-    });
-  });
+         if(videourl === null) return;
 
-  $("#control .pause").click(function(){
-    View.DMRs.pause(function(res){
-      console.dir(res);
-      logger("Pause succeeded");
-    });
-  });
+         $("<img>").attr("data-id", v.id)
+          .attr("data-title", v.title)
+          .attr("data-thumbnail_large", v.thumbnail_large)
+          .attr("data-description", v.description)
+          .attr("data-video", videourl)
+          .on("click", function(ev){
+            start_video($(this));
+          })
+          .appendTo(".playlists");
 
-  $("#control .volume").change(function(e){
-    var volume = $(this).val();
-    View.DMRs.setVolume(volume, function(res){
-      console.log(res);
-      logger("Volume changed => " + volume);
-    });
+         var thumbnail = v.thumbnail_small;
+         getblobURL(v.id, thumbnail, function(id, bloburl) {
+           $(".playlists img[data-id="+id+"]").attr("src", bloburl);
+         });
+       }
+     });
   });
-
 });
+
+var start_video = function(jqObj){
+  console.log(jqObj);
+  var title = jqObj.data("title")
+    , description = jqObj.data("description")
+    , id = jqObj.data("id")
+    , videourl = jqObj.data("video");
+  $(".main").attr("data-video_id", id);
+  $(".main .title").text(title);
+  $(".main .description").text(description);
+  $(".main video").attr("src", videourl);
+}
+
+var getNextVideoID = function(){
+  var curr_id = $(".main").attr("data-video_id")
+    , next_id = $(".playlists img[data-id="+curr_id+"]").next().data("id") || $(".playlists img").first().data("id");
+  return next_id;
+}
+
+var dlnatimer
+$(".main button.start").click(function(e){
+    if(!!dlnatimer) {
+      clearTimeout(dlnatimer);
+      dlnatimer = null;
+    }
+
+    var device = $(".main input[name=device]:checked");
+    e.preventDefault();
+    if(device.val() === "local") {
+      start_video($(".playlists img").first());
+    } else {
+      console.log("dlna devices...");
+      var avurl = device.data("avurl")
+        , rcurl = device.data("rcurl")
+        , cmurl = device.data("cmurl")
+      avt = new AVTransport(avurl);
+
+      var firstid = $(".playlists img").first().data("id");
+
+      var start_video_ = function(id){
+        var videourl = $(".playlists img[data-id="+id+"]").data("video")
+          , title = $(".playlists img[data-id="+id+"]").data("title")
+          , description = $(".playlists img[data-id="+id+"]").data("description")
+          , thumbnail_large = $(".playlists img[data-id="+id+"]").data("thumbnail_large")
+
+        $(".main").attr("data-video_id", id);
+        $(".main .title").text(title);
+        $(".main .description").text(description);
+        getblobURL(null, thumbnail_large, function(id, bloburl) {
+            $(".main img.thumbnail-large").attr("src", bloburl);
+        });
+        Proxy.set(videourl, function(url) {
+          avt.setAVTransportURI(url, function(res){
+            avt.play();
+            dlnatimer = setTimeout(function(){
+              dlnatimer = null;
+              avt.stop(function(){
+                start_video_(getNextVideoID());
+              });
+            }, 30000);
+          });
+        });
+      }
+      start_video_(firstid);
+    }
+});
+
+
+var timer;
+$("video").on("canplay", function(){
+  $(this)[0].play();
+  timer = setTimeout(function(){
+    var nextid = getNextVideoID();
+    start_video($(".playlists img[data-id="+nextid+"]"));
+  }.bind(this), 45000);
+}).on("ended", function(){
+  clearTimeout(timer);
+  var nextid = getNextVideoID();
+  start_video($(".playlists img[data-id="+nextid+"]"));
+});
+
+
+  //showCrossOriginImage();
+});
+
+
+// show cross origin images
+var getblobURL = function(id, url, callback){
+ var xhr = new XMLHttpRequest();
+ xhr.open("GET", url);
+ xhr.responseType = 'blob';
+ xhr.onload = function(e){
+   var blob = this.response;
+   var blob_url = window.URL.createObjectURL(blob);
+   if(typeof(callback) === "function") {
+     callback(id, blob_url);
+   } else {
+     console.log(blob_url);
+   }
+ }
+ xhr.send();
+};
+
+var discovery = new Discovery();
+
+discovery.start(function(lists) {
+    console.log(lists);
+    var t_ = "<label><input type='radio' name='device' class='dlna' data-rcurl='${rcurl}' data-avurl='${avurl}' data-cmurl='${cmurl}' value='${friendlyname}'> ${friendlyname}</label>";
+    lists.forEach(function(list){
+      var t__ = t_
+        .replace("${friendlyname}", list.friendlyName)
+        .replace("${friendlyname}", list.friendlyName)
+        .replace("${rcurl}", list.controlUrls["urn:schemas-upnp-org:service:RenderingControl:1"])
+        .replace("${avurl}", list.controlUrls["urn:schemas-upnp-org:service:AVTransport:1"])
+        .replace("${cmurl}", list.controlUrls["urn:schemas-upnp-org:service:ConnectionManager:1"])
+      $(t__).appendTo(".main .targets");
+    });
+}, "urn:schemas-upnp-org:service:AVTransport:1");

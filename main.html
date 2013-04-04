@@ -7,16 +7,49 @@
     <link rel="stylesheet" href="/css/style.css" />
     <script src="/javascripts/libs/jquery-1.9.1.min.js"></script>
     <script src="/javascripts/libs/chromexpress/buffer.js"></script>
+    <script src="/javascripts/libs/chromexpress/server.js"></script>
     <script src="/javascripts/upnp/upnp.js"></script>
     <script src="/javascripts/discovery.js"></script>
     <script src="/javascripts/dlna/av_transport.js"></script>
     <script src="/javascripts/dlna/rendering_control.js"></script>
     <script src="/javascripts/dlna/content_directory.js"></script>
+    <script src="/javascripts/server/proxy.js"></script>
+    <script src="/javascripts/http_client.js"></script>
+    <script src="/javascripts/youtube_connector.js"></script>
     <script src="/javascripts/script.js"></script>
   </head>
   <body>
-    <div class="container">
-      <h1><img src="/images/logo.png" alt="Chrome DLNA Controller"></h1>
+    <div>
+      <h1>Kushiro no Yabo</h1>
+      <section>
+        <section class="main">
+          <form class="search">
+            <input type="text" name="query">
+            <button type="submit">search</button>
+          </form>
+          <form>
+            <section class="targets">
+            <label>
+            <input type="radio" name="device" class="local" value="local"> local
+            </label>
+            </section>
+
+            <button class="start">start</button>
+          </form>
+          <h2 class="title"></h2>
+          <div class="description"></div>
+          <img class="thumbnail-large"><br>
+          <video class="contents"></video>
+        </section>
+        <section class="playlists">
+        </section>
+      </section>
+
+
+      <!--
+      <div class="test">
+      <img src="">
+      </div>
 
 
       <section class="main">
@@ -58,6 +91,7 @@
         <strong>test contents</strong><br>
         <video src="" controls></video>
       </section>
+      -->
     </div>
   </body>
 </html>

@@ -46,9 +46,11 @@ var youtubeConnector;
   youtubeConnector = function(){
   }
 
-  youtubeConnector.prototype.search = function(query){
+  youtubeConnector.prototype.search = function(query, callback){
     if(!!query === false) throw("query must be specified");
     if(typeof(query) !== "string") throw("query must be string");
+
+    this.callback = callback;
 
     var xhr = new XMLHttpRequest()
       , url = "http://gdata.youtube.com/feeds/api/videos?vq=#{query}&alt=json".replace("#{query}", encodeURIComponent(query));
@@ -83,16 +85,33 @@ var youtubeConnector;
 
   youtubeConnector.prototype.getmpeg4url = function(){
     console.log(this.lists);
+    var c = 0;
     this.lists.forEach(function(list){
       // packaged apps v2 doesn't permit to use webrequest, so can't change User-Agent header
       // should use socket api.
       var url = "http://m.youtube.com/watch?ajax=1&layout=mobile&tsp=1&utcoffset=540&v=" + list.id + "&preq=";
-      console.log(url);
-    });
+
+      new httpClient({url: url}, function(res){
+        c++;
+        var video_ = JSON.parse(res.slice(4)).content.video;
+        this.lists.forEach(function(l_){
+          if(l_.id === video_.encrypted_id) l_.video = video_.fmt_stream_map;
+        });
+        if( c === this.lists.length ) {
+          if(typeof(this.callback) === "function") {
+            this.callback(this.lists);
+          } else {
+            console.log(this.lists);
+          }
+        }
+      }.bind(this));
+    }.bind(this));
   }
 }());
 
 
 // test scenario
-var yc = new youtubeConnector();
-yc.search("html5");
+//var yc = new youtubeConnector();
+//yc.search("NTTコミュニケーションズ", function(res){
+//    console.log("res", res);
+//    });
