@@ -16,8 +16,18 @@
     <script src="/javascripts/server/proxy.js"></script>
     <script src="/javascripts/http_client.js"></script>
     <script src="/javascripts/youtube_connector.js"></script>
+
+    <script type="text/javascript" src="ga_details.js"></script>
+    <script type="text/javascript" src="embedded_ga_host.js"></script>
+    <script type="text/javascript" src="control_ga.js"></script>>
+    <script src="/javascripts/user_id.js"></script>
     <script src="/javascripts/script.js"></script>
+    <link rel="stylesheet" media="all" href="main.css"></link>
+    <link rel="stylesheet" media="all" href="embedded_ga_host.css"></link>
+
   </head>
+
+  
   <body>
     <div>
       <h1>Kushiro no Yabo</h1>
@@ -34,6 +44,8 @@
             </label>
             </section>
 
+        <iframe id="embedded_ga" seamless="seamless" src="embedded_ga_host.html"></iframe>
+
             <button class="start">start</button>
           </form>
           <h2 class="title"></h2>
@@ -43,6 +55,7 @@
         </section>
         <section class="playlists">
         </section>
+
       </section>
 
 

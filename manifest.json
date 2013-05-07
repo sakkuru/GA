@@ -21,9 +21,11 @@
       ]
     }
   },
-  "icons": {
+  "sandbox": {
+    "pages": ["embedded_ga_host.html"]
   },
   "permissions": [
+    "storage",
     "http://*/",
     "experimental",
     {"socket": [
