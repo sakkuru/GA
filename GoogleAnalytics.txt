@@ -1,0 +1,47 @@
+
+https://developers.google.com/analytics/
+
+Google Analytics使い方
+
+_gaqというオブジェクトにプッシュするとよしなに解析してくれる
+
+
+はじめにやること
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+//オブジェクト生成
+var _gaq = _gaq || [];
+
+//アカウント設定
+_gaq.push(['_setAccount', <アカウントID>]);
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+
+ログ取得
+
+ページビュー情報取得
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+  _gaq.push(['_trackPageview', <仮想URL>]);
+
+  仮想URL:（任意）文字列
+
+  例：
+    _gaq.push(['_trackPageview', user_id]);
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+イベント取得
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+  _gaq.push(['_trackEvent', <category>, <action>, <opt_label>, <opt_value>, <opt_noninteraction>]);
+
+  category：（必須）文字列
+  action：（必須）文字列
+  opt_label：（任意）文字列
+  opt_value：（任意）正の整数
+  opt_noninteraction：(任意) 
+    trueだと直帰率に影響を与えない。
+    このイベントが発生した場合は「直帰としない」とする場合はfalse。
+
+  例：
+    _gaq.push(['_trackEvent', 'Uptime(0.1min)', 'Playing on Application', user_id, 1, true]);
+
+ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー

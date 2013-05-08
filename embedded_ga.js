@@ -7,6 +7,7 @@ var cookies = {};
  * it into an object for easier consumption
  */
 document.__defineSetter__('cookie', function(value) {
+  //console.log(value);
   if (value.indexOf(';') < 0) {
     return;
   }
@@ -26,6 +27,7 @@ document.__defineGetter__('cookie', function() {
   for (var cookie in cookies) {
     result.push(cookie + '=' + cookies[cookie]);
   }
+  //console.log(result.join('; '))
   return result.join('; ');
 });
 

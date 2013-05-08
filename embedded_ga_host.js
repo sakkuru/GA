@@ -6,11 +6,11 @@
  */
 
 (function(namespace) {
-  function Proxy2(bridge) {
+  function Proxy(bridge) {
     this.bridge = bridge;
   }
 
-  Proxy2.prototype.push = function(values) {
+  Proxy.prototype.push = function(values) {
     this.bridge.postMessage(values, '*');
   };
 
@@ -26,7 +26,7 @@
       earlyEvents = namespace._gaq;
     }
 
-    namespace._gaq = new Proxy2(bridge);
+    namespace._gaq = new Proxy(bridge);
     for (var i in earlyEvents) {
       namespace._gaq.push(earlyEvents[i]);
     }
